@@ -71,7 +71,7 @@ app.post('/signup', (req, res) => {
         lastName: req.body.lastName,
         username: `${req.body.firstName} ${req.body.lastName}`,
         phoneNumber: req.body.phoneNumber,
-        adress: req.body.adress,
+        address: req.body.adress,
         cep: req.body.cep,
         birthDate: req.body.birthDate,
         email: req.body.email,
@@ -93,7 +93,17 @@ app.post('/signup', (req, res) => {
 
 //TODO
 //manda informações para logar um usuário existente
+app.post('/login', (req, res) => {
+    console.log(req.body);
 
+    let userQuery ={
+        _id: new ObjectID(req.body.userId)
+    }
+
+
+
+
+});
 
 
 
@@ -123,7 +133,7 @@ app.post('/newSchedule', (req, res) => {
         description: req.body.description,
         clue: req.body.clue,
         locationName: req.body.locationName,
-        locationAdress: req.body.locationAdress,
+        locationAddress: req.body.locationAdress,
         //locationLat: req.body.locationLat,
         //locationLng: req.body.locationLng,
         boxName: `Box ${scheduleName}`,
@@ -142,7 +152,6 @@ app.post('/newSchedule', (req, res) => {
     })
 });
 
-//TODO
 //manda informações para efetuar compra de um evento por um usuário
 app.post('/buy', (req, res) => {    //uid é _id do user & sid é _id do schedule
     let userQuery ={
