@@ -15,7 +15,7 @@ app.use(cors());
 //GET
 //pega todos os eventos (schedule)
 app.get('/schedules', (req, res) =>{
-    req.db.collection('schedule')
+    req.db.collection('schedules')
     .find({})
     .toArray((err, data) =>{
         res.send(data);
@@ -24,7 +24,7 @@ app.get('/schedules', (req, res) =>{
 
 //pega todos os perfis de usuário (user)
 app.get('/users', (req, res) =>{
-    req.deb.collection('user')
+    req.deb.collection('users')
     .find({})
     .toArray((err, data) => {
         res.send(data);
@@ -37,14 +37,14 @@ app.get('/userHistory/:id', (req, res) =>{
         _id: new ObjectID(req.params.id)
     };
 
-    req.db.collection('user')
+    req.db.collection('users')
     .findOne(search, (err, data) => {
         let scheduleIds = [];
         for(let schedule of data.scheduleList){
             scheduleIds.push(new ObjectID(schedule._id));
         }
 
-        req.db.collection('schedule')
+        req.db.collection('schedules')
         .find({
             _id: { $in: scheduleIds }
         }).toArray ((err, scheduleArray) => {
@@ -54,6 +54,94 @@ app.get('/userHistory/:id', (req, res) =>{
 });
 
 //POST
+//manda informações para cadastrar novo usuário
+app.post('/signup', (req, res) => {
+    console.log(req.body);
+
+    if (!req.body.firstName || req.body.lastName || req.body.phoneNumber || req.body.adress || req.body.cep || req.body.birthDate || req.body.email || req.body.password || req.body.agreementContract){
+        res.status(400).send({'error': 'Opa! Parece que você esqueceu de preencher algo!'});
+        return;
+    }
+
+    let user = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    username: `${firstName} ${lastName}`,
+    phoneNumber: req.body.phoneNumber,
+    adress: req.body.adress,
+    cep: req.body.cep,
+    birthDate: req.body.birthDate,
+    email: req.body.email,
+    password: req.body.password,
+    agreementContract: req.body.agreementContract,
+    scheduleBought: [{
+        scheduleId: "",
+        scheduleBoughtWith: "",
+        scheduleBoughtDate: "",
+    }]
+  }
+
+  req.db.collection('users')
+  .insert(user, (err, data) => {
+      res.send(data);
+  })
+});
+
+//TODO
+//manda informações para logar um usuário existente
+
+
+
+
+
+//manda informações para cadastrar novo evento
+app.post('/newSchedule', (req, res) => {
+    console.log(req.body);
+
+    //valida que os campos foram todos preenchidos
+    if (!req.scheduleName || req.body.tracks || req.body.dateSchedule || req.body.dateSalesGoOnAir || req.body.dateSalesEnd || req.body.description || req.body.clue || req.body.locationName || req.body.locationAdress || req.body.boxItensList || req.body.speakerName || req.body.speakerEmail || req.body.speakerPhoneNumber){
+        res.status(400).send({'error': 'Todos os campos são obrigatórios'});
+        return;
+    }
+
+    //cria a lista de itens da box
+    let boxItens = [];
+    for (item of req.body.boxItensList) { //boxItensList é o nome da variável array no front!
+        boxItens.push({item});  //Está certo isso?
+    }
+
+    let schedule = {
+        scheduleName: req.body.name,
+        tracks: req.body.tracks,
+        dateSchedule: Date.parse(req.body.dateSchedule), //formato precisa ser: "Sat, 10 Mar 2018 16:30:00 GMT-3"
+        // dateSalesGoOnAir: Date.now(),
+        dateSalesEnd: Date.parse(req.body.dateSalesEnd),
+        description: req.body.description,
+        clue: req.body.clue,
+        locationName: req.body.locationName,
+        locationAdress: req.body.locationAdress,
+        //locationLat: req.body.locationLat,
+        //locationLng: req.body.locationLng,
+        boxName: `Box ${scheduleName}`,
+        boxItens: this.boxItens,
+        speakers: [{
+          speakerName: req.body.speakerName,
+          speakerEmail: req.body.speakerEmail,
+          speakerPhoneNumber: req.body.speakerPhoneNumber
+        }]
+      }
+
+  req.db.collection('schedules')
+  .insert(schedule, (err, data) => {
+      res.send(data);
+  })
+});
+
+//TODO
+//manda informações para efetuar compra de um evento por um usuário
+
+
+
 
 
 
