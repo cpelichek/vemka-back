@@ -49,12 +49,15 @@ app.get('/userHistory/:id', (req, res) =>{
             _id: { $in: scheduleIds }
         }).toArray ((err, scheduleArray) => {
         res.send(scheduleArray);
+        })
     })
-})
+});
 
 //POST
 
 
+
+//LISTENING
 app.listen(8080, () => {
     console.log('Servidor rodando na 8080');
 });
