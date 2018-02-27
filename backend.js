@@ -40,7 +40,7 @@ app.get('/userHistory/:id', (req, res) =>{
     req.db.collection('users')
     .findOne(search, (err, data) => {
         let scheduleIds = [];
-        for(let schedule of data.scheduleList){
+        for(let schedule of data.scheduleBought){
             scheduleIds.push(new ObjectID(schedule._id));
         }
 
@@ -50,7 +50,7 @@ app.get('/userHistory/:id', (req, res) =>{
         }).toArray ((err, scheduleArray) => {
         res.send(scheduleArray);
         })
-    })
+    });
 });
 
 //POST
@@ -139,11 +139,27 @@ app.post('/newSchedule', (req, res) => {
 
 //TODO
 //manda informações para efetuar compra de um evento por um usuário
+app.post('/buy/:uid/:sid', (req, res) => {    //uid é _id do user & sid é _id do schedule
+    let userId ={
+        _id: new ObjectID(req.params.uid)
+    }
 
+    let scheduleId ={
+        _id: new ObjectID(req.params.sid)
+    }
 
+    let scheduleBoughtUpdate ={
+        scheduleId: this.scheduleId,
+        scheduleBoughtWith: req.body.scheduleBoughtWith,
+        scheduleBoughtDate: Date.now()
+    }
 
-
-
+    req.db.collection('users')
+    .update({_id: {$in: userId}}, {$set: scheduleBought}, (err, data) => {
+        scheduleBought.push(scheduleBoughtUpdate);
+        res.send(data);
+    });
+});
 
 //LISTENING
 app.listen(8080, () => {
