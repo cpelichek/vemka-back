@@ -53,15 +53,13 @@ app.get('/userHistory/:id', (req, res) =>{
         }).toArray ((err, scheduleArray) => {
             console.log(data);
             res.send(scheduleArray);
-        })
+        });
     });
 });
 
 //POST
 //manda informações para cadastrar novo usuário
 app.post('/signup', (req, res) => {
-    console.log(req.body);
-    
     if (!req.body.firstName || !req.body.lastName || !req.body.phoneNumber || !req.body.address || !req.body.cep || !req.body.birthDate || !req.body.email || !req.body.password || !req.body.agreementContract){
         res.status(400).send({'error': 'Opa! Parece que você esqueceu de preencher algo!'});
         return;
@@ -92,61 +90,31 @@ app.post('/signup', (req, res) => {
     })
 });
 
-//TODO
+//TODO validar
 //manda informações para logar um usuário existente
 app.post('/login', (req, res) => {
-    console.log(req.body);
+    //validar preenchimento de email e senha
+    if (!req.body.email || !req.body.password){
+        res.status(400).send({'error': 'É necessário um usuário e senha para logar!'});
+        return;
+    }
 
+    //query selector
+    let search = {
+        email: req.body.email,
+        senha: req.body.senha
+    }
+    
+    //
     req.db.collection('users')
-    .findOne(req.body.user.email, (err, userData))
-
-
-
-
-});
-
-/*
-app.post('/buy', (req, res) => {
-    let userQuery ={
-        _id: new ObjectID(req.body.userId)
-    }
-
-    let scheduleQuery ={
-        _id: new ObjectID(req.body.scheduleId)
-    }
-    
-    let scheduleBoughtUpdate ={
-        scheduleId: req.body.scheduleId,
-        scheduleBoughtWith: req.body.scheduleBoughtWith,
-        scheduleBoughtDate: Date.now()
-    }
-    
-    req.db.collection('schedule')
-    .findOne(scheduleQuery, (err, schedule) => {
-        if(!schedule){
-            res.status(404).send({'error': 'Evento não encontrado'});
-            return;
+    .findOne(search, (err, data) => {
+        if (data) {
+            res.send(data);
+        } else {
+            res.status(400).send({'error': 'Usuário ou senha inválidos!'});
         }
-
-        req.db.collection('users')
-        .findOne(userQuery, (err, user) => {
-            if(!user){
-                res.status(404).send({'error': 'Usuario não encontrado'});
-                return;
-            }
-
-            user.scheduleBought.push(scheduleBoughtUpdate);
-
-            req.db.collection('users').update(userQuery, user, (err) => {
-                res.send(user);
-            });
-        });
-    });
+    })
 });
-*/
-
-
-
 
 //manda informações para cadastrar novo evento
 app.post('/newSchedule', (req, res) => {
