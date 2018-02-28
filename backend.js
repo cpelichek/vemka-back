@@ -97,12 +97,8 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
     console.log(req.body);
 
-    let userQuery ={
-        _id: new ObjectID(req.body.userId)
-    }
-
     req.db.collection('users')
-    .findOne(userQuery, (err, userData))
+    .findOne(req.body.user.email, (err, userData))
 
 
 
@@ -157,7 +153,7 @@ app.post('/newSchedule', (req, res) => {
     console.log(req.body);
     
     //valida que os campos foram todos preenchidos
-    if (!req.body.scheduleName || !req.body.tracks || !req.body.dateSchedule || !req.body.dateSalesEnd || !req.body.description || !req.body.clue || !req.body.locationName || !req.body.locationAddress){
+    if (!req.body.scheduleName || !req.body.tracks || !req.body.dateSchedule || !req.body.dateSalesEnd || !req.body.description || !req.body.clue || !req.body.locationName || !req.body.locationAddress || !req.body.box || !req.body.speakers){
         res.status(400).send({'error': 'Todos os campos sobre o evento são obrigatórios!'});
         return;
     }
@@ -170,33 +166,18 @@ app.post('/newSchedule', (req, res) => {
 
     let dateSalesEndConversor = Date.parse(req.body.dateSalesEnd);
 
-    //auxiliar para passar uma lista de itens da box
-    let boxItensListAux = [];
-    if (req.body.boxItensList){
-        for (item of req.body.boxItensList) { //boxItensList é o nome da variável array no front!
-            boxItensListAux.push({item});  //Está certo isso?
-        }
-    }
+    //lista de itens
+    let boxItensListAux = req.body.box;
 
-     //auxiliar para criar um objeto do artista que será inserido na lista de artistas do evento
-     let speakerAux = {
-        speakerName: req.body.speakerName,
-        speakerEmail: req.body.speakerEmail,
-        speakerPhoneNumber: req.body.speakerPhoneNumber
-    }
-
-    //auxiliar para passar uma lista de artistas
-    let speakerListAux = [];
-    if (speakerAux){
-        speakerListAux.push(speakerAux);
-    }
+    //lista de artistas
+    let speakerListAux = req.body.speakers;
     
     let schedule = {
         scheduleName: scheduleNameAux,
         tracks: req.body.tracks,
         dateSchedule: req.body.dateSchedule,    //formato precisa ser: "Sat, 10 Mar 2018 16:30:00 GMT-3"
         dateScheduleMS: dateScheduleConversor,
-        // dateSalesGoOnAir: Date.now(),
+        //dateSalesGoOnAir: Date.now(),
         dateSalesEnd: req.body.dateSalesEnd,
         dateSalesEndMS: dateSalesEndConversor,
         description: req.body.description,
