@@ -121,8 +121,7 @@ app.post('/newSchedule', (req, res) => {
     
     //valida que os campos foram todos preenchidos
     if (!req.body.scheduleName || !req.body.tracks || !req.body.dateSchedule || !req.body.dateSalesEnd || !req.body.description || !req.body.clue || !req.body.locationName || !req.body.locationAddress || !req.body.box || !req.body.speakers){
-        // res.status(400).send({'error': 'Todos os campos sobre o evento são obrigatórios!'});
-        res.status(400).send({'error': 'Todos'});
+        res.status(400).send({'error': 'Todos os campos sobre o evento são obrigatórios!'});
 
         return;
     }
@@ -149,6 +148,7 @@ app.post('/newSchedule', (req, res) => {
         //dateSalesGoOnAir: Date.now(),
         dateSalesEnd: req.body.dateSalesEnd,
         dateSalesEndMS: dateSalesEndConversor,
+        dateBoxSent: req.body.dateBoxSent,
         description: req.body.description,
         clue: req.body.clue,
         locationName: req.body.locationName,
