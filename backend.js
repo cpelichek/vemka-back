@@ -90,7 +90,6 @@ app.post('/signup', (req, res) => {
     })
 });
 
-//TODO validar
 //manda informações para logar um usuário existente
 app.post('/login', (req, res) => {
     //validar preenchimento de email e senha
@@ -122,7 +121,9 @@ app.post('/newSchedule', (req, res) => {
     
     //valida que os campos foram todos preenchidos
     if (!req.body.scheduleName || !req.body.tracks || !req.body.dateSchedule || !req.body.dateSalesEnd || !req.body.description || !req.body.clue || !req.body.locationName || !req.body.locationAddress || !req.body.box || !req.body.speakers){
-        res.status(400).send({'error': 'Todos os campos sobre o evento são obrigatórios!'});
+        // res.status(400).send({'error': 'Todos os campos sobre o evento são obrigatórios!'});
+        res.status(400).send({'error': 'Todos'});
+
         return;
     }
 
