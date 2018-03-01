@@ -24,7 +24,7 @@ app.get('/schedules', (req, res) =>{
 })
 
 //pega um schedule e exibe
-app.get('/scheduleDetail', (req, res) => {
+app.get('/scheduleDetail/:id', (req, res) => {
     let search ={
         _id: new ObjectID(req.params.id)
     };
