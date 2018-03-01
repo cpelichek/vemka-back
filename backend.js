@@ -20,8 +20,8 @@ app.get('/schedules', (req, res) =>{
     .toArray((err, data) =>{
         console.log(data);
         res.send(data);
-    })
-})
+    });
+});
 
 //pega um schedule e exibe
 app.get('/scheduleDetail/:id', (req, res) => {
@@ -32,8 +32,8 @@ app.get('/scheduleDetail/:id', (req, res) => {
     req.db.collection('schedules')
     .findOne(search, (err, schedule) => {
         res.send(schedule)
-    })
-})
+    });
+});
 
 //pega todos os perfis de usuário (user)
 app.get('/users', (req, res) =>{
@@ -42,8 +42,8 @@ app.get('/users', (req, res) =>{
     .toArray((err, data) => {
         console.log(data);
         res.send(data);
-    })
-})
+    });
+});
 
 //(muito importante!)
 //pega todos os eventos que o usuário participou
@@ -99,7 +99,7 @@ app.post('/signup', (req, res) => {
     .insert(user, (err, data) => {
         console.log(data);
         res.send(data);
-    })
+    });
 });
 
 //manda informações para logar um usuário existente
@@ -124,7 +124,7 @@ app.post('/login', (req, res) => {
         } else {
             res.status(400).send({'error': 'Usuário ou senha inválidos!'});
         }
-    })
+    });
 });
 
 //manda informações para cadastrar novo evento
@@ -132,7 +132,7 @@ app.post('/newSchedule', (req, res) => {
     console.log(req.body);
     
     //valida que os campos foram todos preenchidos
-    if (!req.body.scheduleName || !req.body.tracks || !req.body.dateSchedule || !req.body.duration || !req.body.dateSalesEnd || !req.body.description || !req.body.clue || !req.body.locationName || !req.body.locationAddress || !req.body.box || !req.body.speakers){
+    if (!req.body.scheduleName || !req.body.tracks || !req.body.dateSchedule || !req.body.duration || !req.body.price || !req.body.dateSalesEnd || !req.body.description || !req.body.clue || !req.body.locationName || !req.body.locationAddress || !req.body.box || !req.body.speakers){
         res.status(400).send({'error': 'Todos os campos sobre o evento são obrigatórios!'});
 
         return;
@@ -158,6 +158,7 @@ app.post('/newSchedule', (req, res) => {
         dateSchedule: req.body.dateSchedule,    //formato precisa ser: "Sat, 10 Mar 2018 16:30:00 GMT-3"
         dateScheduleMS: dateScheduleConversor,
         duration: req.body.duration,
+        price: req.body.price,
         //dateSalesGoOnAir: Date.now(),
         dateSalesEnd: req.body.dateSalesEnd,
         dateSalesEndMS: dateSalesEndConversor,
@@ -177,7 +178,7 @@ app.post('/newSchedule', (req, res) => {
     .insert(schedule, (err, data) => {
         console.log(data);
         res.send(data);
-    })
+    });
 });
 
 //(muito importante!)
