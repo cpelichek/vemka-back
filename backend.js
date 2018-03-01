@@ -12,6 +12,19 @@ app.use(expressMongoDb('mongodb://localhost/vemka-api'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cors());
 
+//REMOVE
+//apaga eventos
+app.delete('/removeSchedule/:id', (req, res) => {
+    let search ={
+        _id: new ObjectID(req.params.id)
+    };
+
+    req.db.collection('schedules')
+    .remove(search, {"justOne": true}, (err, result) => {
+        res.status(200).send('Removido com sucesso');
+    });
+});
+
 //GET
 //pega todos os eventos (schedule)
 app.get('/schedules', (req, res) =>{
