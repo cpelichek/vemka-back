@@ -23,6 +23,18 @@ app.get('/schedules', (req, res) =>{
     })
 })
 
+//pega um schedule e exibe
+app.get('/scheduleDetail', (req, res) => {
+    let search ={
+        _id: new ObjectID(req.params.id)
+    };
+
+    req.db.collection('schedules')
+    .findOne(search, (err, schedule) => {
+        res.send(schedule)
+    })
+})
+
 //pega todos os perfis de usuário (user)
 app.get('/users', (req, res) =>{
     req.db.collection('users')
